@@ -13,6 +13,10 @@ function sleep(ms) {
     return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
+function randomIntFromInterval(min, max) { // min and max included 
+    return Math.floor(Math.random() * (max - min + 1) + min);
+  }
+
 function filename(name) {
     return name.replaceAll('&', 'and').replaceAll(':', ' -').replaceAll(/[^a-z0-9 ._-]+/ig, '');
 }
@@ -270,10 +274,11 @@ async function setStatus(text) {
                 await driver.switchTo().window(originalWindow);
                 await sleep(500);
                 
-                await setStatus("Waiting for 5 seconds to avoid rate limiting");
+                const sleeptimer = randomIntFromInterval(5000, 100000);
+                await setStatus(`Waiting for ${sleeptimer / 1000} seconds to avoid rate limiting`);
 
-                // Pause for 5 seconds to avoid rate limiting
-                await sleep(5000);
+                // Pause for x seconds to avoid rate limiting
+                await sleep(sleeptimer);
                 
                 
                 const audioBuffer = fs.readFileSync(downloadedFile);
