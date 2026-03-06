@@ -7,3 +7,11 @@
 **.jpg
 **.txt
 /.browser-cache
+# Local environment config - contains your personal paths
+.env
+
+# npm dependencies
+node_modules/
+
+# Temporary downloads
+.downloads/

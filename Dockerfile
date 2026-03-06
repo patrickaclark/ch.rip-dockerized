@@ -4,8 +4,11 @@ FROM ubuntu:22.04
 # Prevent interactive prompts during package install
 ENV DEBIAN_FRONTEND=noninteractive
 
-# Install system dependencies
-RUN apt-get update && apt-get install -y \
+# Install Node.js repo first, then install everything in one layer
+RUN apt-get update && apt-get install -y curl ca-certificates \
+    && curl -fsSL https://deb.nodesource.com/setup_20.x | bash -
+
+RUN apt-get install -y \
     # Virtual display
     xvfb \
     # VNC server
@@ -15,18 +18,32 @@ RUN apt-get update && apt-get install -y \
     # noVNC dependencies
     novnc \
     websockify \
-    # Node.js via nodesource
-    curl \
-    # ffmpeg for repack.js
+    nodejs \
     ffmpeg \
-    # Misc utilities
     wget \
-    ca-certificates \
-    && rm -rf /var/lib/apt/lists/*
-
-# Install Node.js 20
-RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
-    && apt-get install -y nodejs \
+    # Chrome for Testing shared library dependencies
+    libglib2.0-0 \
+    libnss3 \
+    libnspr4 \
+    libatk1.0-0 \
+    libatk-bridge2.0-0 \
+    libcups2 \
+    libdrm2 \
+    libdbus-1-3 \
+    libxcb1 \
+    libxkbcommon0 \
+    libx11-6 \
+    libxcomposite1 \
+    libxdamage1 \
+    libxext6 \
+    libxfixes3 \
+    libxrandr2 \
+    libgbm1 \
+    libpango-1.0-0 \
+    libcairo2 \
+    libasound2 \
+    libatspi2.0-0 \
+    fonts-liberation \
     && rm -rf /var/lib/apt/lists/*
 
 # Set working directory
