@@ -27,7 +27,8 @@ This project owes a lot to the automation orginally from https://gist.github.com
 
 3. Log in to chirp, select your book by clicking the **COVER**  not the title. 
 
-4. Go to the first chapter of the book!! Press the play button. The script will now jump through all the chapters snooping on and downloading the files for you.  A random backoff timer has been put in place, forcing a wait between 15 and 60 seconds between file downloads.  This will help keep Chirp from banning your IP and giving you 403 errors.  
+4. Go to the first chapter of the book!! Press the play button. The script will now jump through all the chapters snooping on and downloading the files for you.  
+   -  A random backoff timer has been put in place, forcing a wait between 15 and 36 seconds between file downloads.  This will help keep Chirp from banning your IP and giving you 403 errors.  
 Files will go into the output folder you set in the .env file.  
 
 5. The script closes the book tab. You may now select another book or exit the browser window.
@@ -54,7 +55,7 @@ If you encounter issues, check the console output for error messages. When repor
 #### Fixed
 - Created DockerFile that pulls in all pre-requisites and makes setup easy
 #### Improved
-- Added a random backoff sleep timer function between 15 and 60 seconds that stops most 403s
+- Added a random backoff sleep timer function between 15 and 36 seconds that stops most 403s
 - Inside Docker, you no longer get the screen steal when files change.  You can continue to use your computer if this is running locally. 
 #### Known Issues:
 - Container crashes upon close of Chrome or error in script.  This is expected behavior. 
