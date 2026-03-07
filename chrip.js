@@ -273,7 +273,7 @@ async function setStatus(text) {
                 await driver.close();
                 await driver.switchTo().window(originalWindow);
                 await sleep(500);
-                
+                // Set Randomized rate-limit backoff timer here
                 const sleeptimer = randomIntFromInterval(15000, 36000);
                 await setStatus(`Waiting for ${sleeptimer / 1000} seconds to avoid rate limiting`);
                 await sleep(sleeptimer);
