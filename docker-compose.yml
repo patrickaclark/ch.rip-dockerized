@@ -1,0 +1,16 @@
+services:
+  chrip:
+    build: .
+    container_name: chrip
+    restart: "no"
+    ports:
+      - "6080:6080"
+    volumes:
+      - ${AUDIOBOOKS_PATH}:/output
+    shm_size: 2g
+    environment:
+      - VNC_PASSWORD=${VNC_PASSWORD:-}
+      - DISPLAY=:1
+      - SCREEN_WIDTH=1280
+      - SCREEN_HEIGHT=800
+      - SCREEN_DEPTH=24

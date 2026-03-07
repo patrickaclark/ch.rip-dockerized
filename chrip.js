@@ -12,7 +12,9 @@ let driver;
 function sleep(ms) {
     return new Promise((resolve) => setTimeout(resolve, ms));
 }
-
+function randomIntFromInterval(min, max) {
+  return Math.floor(Math.random() * (max - min + 1) + min);
+}
 function filename(name) {
     return name.replaceAll('&', 'and').replaceAll(':', ' -').replaceAll(/[^a-z0-9 ._-]+/ig, '');
 }
@@ -131,6 +133,8 @@ async function setStatus(text) {
     opt.setBinaryPath(chromePath);
     opt.addArguments("--disable-features=DisableLoadExtensionCommandLineSwitch");
     opt.addArguments("--load-extension=" + path.join(__dirname, "ext"));
+    opt.addArguments("--no-sandbox");
+    opt.addArguments("--disable-dev-shm-usage");
     opt.setUserPreferences({
         'download.default_directory': downloadDir,
         'download.prompt_for_download': false,
@@ -269,11 +273,10 @@ async function setStatus(text) {
                 await driver.close();
                 await driver.switchTo().window(originalWindow);
                 await sleep(500);
-                
-                await setStatus("Waiting for 5 seconds to avoid rate limiting");
-
-                // Pause for 5 seconds to avoid rate limiting
-                await sleep(5000);
+                // Set Randomized rate-limit backoff timer here
+                const sleeptimer = randomIntFromInterval(15000, 36000);
+                await setStatus(`Waiting for ${sleeptimer / 1000} seconds to avoid rate limiting`);
+                await sleep(sleeptimer);
                 
                 
                 const audioBuffer = fs.readFileSync(downloadedFile);
