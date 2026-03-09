@@ -177,7 +177,7 @@ title=${data.title}
     console.log(chapterMetadata);
 }
 
-async function concatenateAllToOneWithChapters(metadatafile, listAudioFiles) {
+async function concatenateAllToOneWithChapters(metadatafile, listAudioFiles, outputDir) {
     const filename = `${title}.m4a`;
     console.log(`Concatenating chapters to ${filename}`);
 
@@ -189,7 +189,8 @@ async function concatenateAllToOneWithChapters(metadatafile, listAudioFiles) {
     console.log("Adding cover image");
     await spawnCommand(`ffmpeg -hide_banner -loglevel error -i "${tempFile}" -i "${cover}" -c copy -disposition:v attached_pic "${filename}"`);
 
-    fs.renameSync(filename, path.join('..', filename));
+    fs.mkdirSync(outputDir, { recursive: true });
+    fs.renameSync(filename, path.join(outputDir, filename));
 
     fs.unlinkSync(tempFile);
 }
@@ -214,10 +215,14 @@ if (require.main === module) {
     console.log(process.argv);
 
     const folder = process.argv[2].replace(/"/g, '');
+    const outputDir = process.argv[3]
+        ? path.resolve(process.argv[3].replace(/"/g, ''))
+        : path.resolve(folder, '..');
+
     title = path.basename(folder).replace(/"/g, '');
     console.log(title);
 
-    let listAudioFiles = fs.readdirSync(folder).filter(f => f.includes('.m4a'));
+    let listAudioFiles = fs.readdirSync(folder).filter(f => f.toLowerCase().endsWith('.m4a'));
     
     // Make sure we don't include any temp files in case we crashed previously
     listAudioFiles = listAudioFiles.filter(f => f !== 'i.m4a' && f !== `${title}.m4a`);
@@ -232,7 +237,7 @@ if (require.main === module) {
     makeChaptersMetadata(listAudioFiles, metadataFilePath)
         .then(() => {
             createFileList(listAudioFiles, listFilePath);
-            return concatenateAllToOneWithChapters(metadataFilePath, listFilePath);
+            return concatenateAllToOneWithChapters(metadataFilePath, listFilePath, outputDir);
         })
         .then(() => {
            console.log("Completed successfully")
